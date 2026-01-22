@@ -1,0 +1,25 @@
+{
+  "public": true,
+  "rewrites": [
+    {
+      "source": "/",
+      "destination": "/src/ai-video-widget.html"
+    },
+    {
+      "source": "/index.html",
+      "destination": "/src/ai-video-widget.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/public/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ]
+}
+
