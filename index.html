@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>AI Video Widget</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./ai-video-widget.css" />
+  </head>
+  <body style="margin:0; padding:40px; background:#ffffff; font-family:system-ui, -apple-system, BlinkMacSystemFont, sans-serif;">
+    <div id="ai-video-widget-root">
+      <div class="ai-video-widget-root">
+        <div class="ai-video-widget-container">
+          <!-- PREVIEW -->
+          <div class="ai-video-widget-preview-wrap">
+            <div class="ai-video-widget-screen">
+              <button class="ai-video-widget-slider-btn prev" type="button" aria-label="Previous example"></button>
+              <div class="ai-video-widget-video-frame">
+                <div class="ai-video-widget-video-slider">
+                  <div class="ai-video-widget-video-slide current">
+                    <video
+                      class="ai-video-widget-video"
+                      playsinline
+                      muted
+                      loop
+                      autoplay
+                    ></video>
+                    <div class="ai-video-widget-video-gradient"></div>
+                    <div class="ai-video-widget-video-overlay"></div>
+                  </div>
+                  <div class="ai-video-widget-video-slide next">
+                    <video
+                      class="ai-video-widget-video-next"
+                      playsinline
+                      muted
+                      loop
+                    ></video>
+                    <div class="ai-video-widget-video-gradient"></div>
+                    <div class="ai-video-widget-video-overlay"></div>
+                  </div>
+                </div>
+              </div>
+              <button class="ai-video-widget-slider-btn next" type="button" aria-label="Next example"></button>
+              <div class="ai-video-widget-vignette"></div>
+            </div>
+          </div>
+
+          <!-- PANEL -->
+          <div class="ai-video-widget-panel">
+            <div class="ai-video-widget-panel-header">
+              <div class="ai-video-widget-tabs">
+                <button
+                  type="button"
+                  class="ai-video-widget-tab ai-video-widget-tab-text active"
+                  data-mode="text"
+                >
+                  Text to Video
+                </button>
+                <button
+                  type="button"
+                  class="ai-video-widget-tab ai-video-widget-tab-image"
+                  data-mode="image"
+                >
+                  Image to Video
+                </button>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-field-group">
+              <div class="ai-video-widget-section-label">Model</div>
+              <div class="ai-video-widget-select ai-video-widget-model-select">
+                <button type="button" class="ai-video-widget-select-trigger">
+                  <span class="ai-video-widget-select-label">VideoXL 1.5 (beta)</span>
+                </button>
+                <div class="ai-video-widget-select-menu">
+                  <button type="button" class="ai-video-widget-select-option active" data-value="VideoXL 1.5 (beta)">VideoXL 1.5 (beta)</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="GPT-5.2">GPT-5.2</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="DeepSeek V3.2">DeepSeek V3.2</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="Claude 4.5 Sonnet">Claude 4.5 Sonnet</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="Gemini 3 Pro">Gemini 3 Pro</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="Grok 4.1">Grok 4.1</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="Qwen 3">Qwen 3</button>
+                  <button type="button" class="ai-video-widget-select-option" data-value="Llama 4">Llama 4</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-field-group ai-video-widget-prompt-group ai-video-widget-prompt-text">
+              <div class="ai-video-widget-section-label">Prompt</div>
+              <div class="ai-video-widget-input-row">
+                <textarea
+                  id="ai-video-widget-prompt-text-input"
+                  name="prompt-text"
+                  class="ai-video-widget-textarea"
+                  placeholder="Describe the shot you want to generate..."
+                ></textarea>
+                <button
+                  type="button"
+                  class="ai-video-widget-improve-btn"
+                  aria-label="Improve prompt"
+                >
+                  <span class="ai-video-widget-tooltip">Prompt editor</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="4" y="4" width="12" height="14" rx="2" />
+                    <path d="M9 8h4" />
+                    <path d="M9 12h2" />
+                    <path d="M16.5 9.5 19 12" />
+                    <path d="M15 17l4-4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-field-group ai-video-widget-image-section" style="display: none;">
+              <div class="ai-video-widget-section-label">Reference image</div>
+              <div class="ai-video-widget-reference-grid">
+                <label class="ai-video-widget-reference-box ai-video-widget-reference-box-upload">
+                  <div class="ai-video-widget-reference-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="17 8 12 3 7 8" />
+                      <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                  </div>
+                  <div class="ai-video-widget-reference-label">Drop or select file</div>
+                  <div class="ai-video-widget-reference-hover">drop</div>
+                  <input type="file" accept="image/*" style="display: none;" />
+                </label>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-field-group ai-video-widget-prompt-group ai-video-widget-prompt-image" style="display: none;">
+              <div class="ai-video-widget-section-label">Prompt</div>
+              <div class="ai-video-widget-input-row">
+                <textarea
+                  id="ai-video-widget-prompt-image-input"
+                  name="prompt-image"
+                  class="ai-video-widget-textarea"
+                  placeholder="Describe the shot you want to generate..."
+                ></textarea>
+                <button
+                  type="button"
+                  class="ai-video-widget-improve-btn"
+                  aria-label="Improve prompt"
+                >
+                  <span class="ai-video-widget-tooltip">Prompt editor</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.7"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <rect x="4" y="4" width="12" height="14" rx="2" />
+                    <path d="M9 8h4" />
+                    <path d="M9 12h2" />
+                    <path d="M16.5 9.5 19 12" />
+                    <path d="M15 17l4-4" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-field-group">
+              <div class="ai-video-widget-select-row">
+                <div class="ai-video-widget-select-col">
+                  <div class="ai-video-widget-section-label">Aspect ratio</div>
+                  <div class="ai-video-widget-select ai-video-widget-aspect-select">
+                    <button type="button" class="ai-video-widget-select-trigger">
+                      <span class="ai-video-widget-select-label">16:9</span>
+                    </button>
+                    <div class="ai-video-widget-select-menu">
+                      <button type="button" class="ai-video-widget-select-option" data-value="16:9">16:9</button>
+                      <button type="button" class="ai-video-widget-select-option" data-value="9:16">9:16</button>
+                      <button type="button" class="ai-video-widget-select-option" data-value="1:1">1:1</button>
+                      <button type="button" class="ai-video-widget-select-option" data-value="4:5">4:5</button>
+                    </div>
+                  </div>
+                </div>
+                <div class="ai-video-widget-select-col">
+                  <div class="ai-video-widget-section-label">Quality</div>
+                  <div class="ai-video-widget-select ai-video-widget-quality-select">
+                    <button type="button" class="ai-video-widget-select-trigger">
+                      <span class="ai-video-widget-select-label">Standard</span>
+                    </button>
+                    <div class="ai-video-widget-select-menu">
+                      <button type="button" class="ai-video-widget-select-option" data-value="Standard">Standard</button>
+                      <button type="button" class="ai-video-widget-select-option" data-value="HD">HD</button>
+                      <button type="button" class="ai-video-widget-select-option" data-value="4K">4K</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-field-group">
+              <div class="ai-video-widget-section-label">Duration</div>
+              <div class="ai-video-widget-number-select ai-video-widget-duration-row">
+                <button
+                  type="button"
+                  class="ai-video-widget-pill"
+                  data-duration="5"
+                >
+                  5s
+                </button>
+                <button
+                  type="button"
+                  class="ai-video-widget-pill active"
+                  data-duration="10"
+                >
+                  10s
+                </button>
+                <button
+                  type="button"
+                  class="ai-video-widget-pill"
+                  data-duration="20"
+                >
+                  20s
+                </button>
+                <button
+                  type="button"
+                  class="ai-video-widget-pill"
+                  data-duration="30"
+                >
+                  30s
+                </button>
+              </div>
+            </div>
+
+            <div class="ai-video-widget-footer">
+              <button
+                type="button"
+                class="ai-video-widget-generate-btn"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                </svg>
+                <span class="ai-video-widget-generate-label">Generate</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-video-widget-toast">
+          <span>Prompt improved</span>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./ai-video-widget.js"></script>
+  </body>
+</html>
