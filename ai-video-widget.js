@@ -44,9 +44,9 @@
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg><span class="ai-video-widget-generate-label">Generate</span>';
 
   var slides = [
-    { src: './public/6.mp4' },
-    { src: './public/8.mp4' },
-    { src: './public/video3.mp4' }
+    { src: '/6.mp4' },
+    { src: '/8.mp4' },
+    { src: '/video3.mp4' }
   ];
 
   var autoSlideInterval = null;
