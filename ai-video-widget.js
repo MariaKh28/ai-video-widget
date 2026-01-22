@@ -33,8 +33,6 @@
     nextSlide: root.querySelector('.ai-video-widget-video-slide.next'),
     video: root.querySelector('.ai-video-widget-video'),
     videoNext: root.querySelector('.ai-video-widget-video-next'),
-    sliderPrev: root.querySelector('.ai-video-widget-slider-btn.prev'),
-    sliderNext: root.querySelector('.ai-video-widget-slider-btn.next'),
     generateBtn: root.querySelector('.ai-video-widget-generate-btn'),
     improveBtn: root.querySelector('.ai-video-widget-improve-btn'),
     toast: root.querySelector('.ai-video-widget-toast')
@@ -50,8 +48,18 @@
   ];
 
   var autoSlideInterval = null;
-
   var lastRenderedSlide = -1;
+
+  // Предзагрузка следующего видео
+  function preloadNextVideo() {
+    if (!els.videoNext) return;
+    var nextIndex = (state.currentSlide + 1) % slides.length;
+    var nextSlide = slides[nextIndex];
+    if (els.videoNext.src !== nextSlide.src) {
+      els.videoNext.src = nextSlide.src;
+      els.videoNext.load();
+    }
+  }
 
   function updateVideo() {
     if (!els.video || !els.currentSlide || !els.nextSlide || !slides[state.currentSlide]) return;
@@ -64,13 +72,14 @@
     if (currentIndex !== String(state.currentSlide)) {
         // Если это не первая загрузка, запускаем анимацию
         if (currentIndex !== null && currentIndex !== undefined) {
-          els.videoNext.src = slide.src;
-          els.videoNext.load();
-          
+          // Видео уже должно быть предзагружено, сразу запускаем анимацию
           // Текущее видео уезжает влево
           els.currentSlide.classList.add('slide-out');
           // Новое видео подъезжает справа
           els.nextSlide.classList.add('slide-in');
+          
+          // Запускаем новое видео сразу
+          els.videoNext.play().catch(function() {});
           
           // После завершения анимации меняем слайды местами
           setTimeout(function() {
@@ -95,18 +104,25 @@
             els.video.setAttribute('data-src', slide.src);
             els.video.setAttribute('data-slide-index', String(state.currentSlide));
             
-            els.video.play().catch(function() {});
+            // Останавливаем старое видео
             if (els.videoNext) {
               els.videoNext.pause();
               els.videoNext.currentTime = 0;
             }
-          }, 600);
+            
+            // Предзагружаем следующее видео для следующего переключения
+            preloadNextVideo();
+          }, 800);
         } else {
+          // Первая загрузка
           els.video.setAttribute('data-src', slide.src);
           els.video.setAttribute('data-slide-index', String(state.currentSlide));
           els.video.src = slide.src;
           els.video.load();
           els.video.play().catch(function() {});
+          
+          // Предзагружаем следующее видео
+          preloadNextVideo();
         }
       }
   }
@@ -289,13 +305,7 @@
     }, 5000);
   }
 
-  function changeSlide(delta) {
-    state.currentSlide = (state.currentSlide + delta + slides.length) % slides.length;
-    updateVideo();
-    startAutoSlide();
-  }
-  if (els.sliderPrev) els.sliderPrev.addEventListener('click', function() { changeSlide(-1); });
-  if (els.sliderNext) els.sliderNext.addEventListener('click', function() { changeSlide(1); });
+  // Кнопки слайдера удалены - слайдер работает только автоматически
 
   els.improveBtn.addEventListener('click', showToast);
 

@@ -13,7 +13,6 @@
           <!-- PREVIEW -->
           <div class="ai-video-widget-preview-wrap">
             <div class="ai-video-widget-screen">
-              <button class="ai-video-widget-slider-btn prev" type="button" aria-label="Previous example"></button>
               <div class="ai-video-widget-video-frame">
                 <div class="ai-video-widget-video-slider">
                   <div class="ai-video-widget-video-slide current">
@@ -23,6 +22,7 @@
                       muted
                       loop
                       autoplay
+                      preload="auto"
                     ></video>
                     <div class="ai-video-widget-video-gradient"></div>
                     <div class="ai-video-widget-video-overlay"></div>
@@ -33,13 +33,13 @@
                       playsinline
                       muted
                       loop
+                      preload="auto"
                     ></video>
                     <div class="ai-video-widget-video-gradient"></div>
                     <div class="ai-video-widget-video-overlay"></div>
                   </div>
                 </div>
               </div>
-              <button class="ai-video-widget-slider-btn next" type="button" aria-label="Next example"></button>
               <div class="ai-video-widget-vignette"></div>
             </div>
           </div>
@@ -120,7 +120,7 @@
             <div class="ai-video-widget-field-group ai-video-widget-image-section" style="display: none;">
               <div class="ai-video-widget-section-label">Reference image</div>
               <div class="ai-video-widget-reference-grid">
-                <label class="ai-video-widget-reference-box ai-video-widget-reference-box-upload">
+                <div class="ai-video-widget-reference-box ai-video-widget-reference-box-upload">
                   <div class="ai-video-widget-reference-icon">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
                       <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -128,10 +128,10 @@
                       <line x1="12" y1="3" x2="12" y2="15" />
                     </svg>
                   </div>
-                  <div class="ai-video-widget-reference-label">Drop or select file</div>
-                  <div class="ai-video-widget-reference-hover">drop</div>
-                  <input type="file" accept="image/*" style="display: none;" />
-                </label>
+                  <div class="ai-video-widget-reference-label">Image</div>
+                  <div class="ai-video-widget-reference-hover">Drop or select file</div>
+                  <!-- <input type="file" accept="image/*" style="display: none;" /> -->
+                </div>
               </div>
             </div>
 
