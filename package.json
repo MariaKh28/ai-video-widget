@@ -1,13 +1,16 @@
 {
   "name": "ai-model",
   "version": "1.0.0",
-  "main": "src/ai-video-widget.js",
+  "main": "server.js",
   "scripts": {
-    "start": "npx serve -l 3000 .",
-    "dev": "npx serve -l 3000 ."
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "AI Video Widget - Text to Video / Image to Video generator"
+  "description": "AI Video Widget - Text to Video / Image to Video generator",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
 }
