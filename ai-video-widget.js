@@ -48,6 +48,7 @@
   ];
 
   var autoSlideInterval = null;
+
   var lastRenderedSlide = -1;
 
   function updateVideo() {
@@ -61,25 +62,13 @@
     if (currentIndex !== String(state.currentSlide)) {
         // Если это не первая загрузка, запускаем анимацию
         if (currentIndex !== null && currentIndex !== undefined) {
-          // Загружаем новое видео и запускаем с начала
           els.videoNext.src = slide.src;
-          els.videoNext.currentTime = 0;
           els.videoNext.load();
           
-          // Запускаем анимацию сразу
+          // Текущее видео уезжает влево
           els.currentSlide.classList.add('slide-out');
+          // Новое видео подъезжает справа
           els.nextSlide.classList.add('slide-in');
-          
-          // Запускаем новое видео с начала после небольшой задержки для загрузки
-          els.videoNext.addEventListener('loadeddata', function onLoaded() {
-            els.videoNext.removeEventListener('loadeddata', onLoaded);
-            els.videoNext.play().catch(function() {});
-          }, { once: true });
-          
-          // Если видео уже загружено, запускаем сразу
-          if (els.videoNext.readyState >= 2) {
-            els.videoNext.play().catch(function() {});
-          }
           
           // После завершения анимации меняем слайды местами
           setTimeout(function() {
@@ -104,18 +93,16 @@
             els.video.setAttribute('data-src', slide.src);
             els.video.setAttribute('data-slide-index', String(state.currentSlide));
             
-            // Останавливаем старое видео
+            els.video.play().catch(function() {});
             if (els.videoNext) {
               els.videoNext.pause();
               els.videoNext.currentTime = 0;
             }
-          }, 800);
+          }, 600);
         } else {
-          // Первая загрузка
           els.video.setAttribute('data-src', slide.src);
           els.video.setAttribute('data-slide-index', String(state.currentSlide));
           els.video.src = slide.src;
-          els.video.currentTime = 0;
           els.video.load();
           els.video.play().catch(function() {});
         }
@@ -301,6 +288,16 @@
   }
 
   // Кнопки слайдера удалены - слайдер работает только автоматически
+
+  // Блокируем открытие диалога выбора файла при клике на Reference image
+  var referenceBox = root.querySelector('.ai-video-widget-reference-box-upload');
+  if (referenceBox) {
+    referenceBox.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Ничего не делаем - диалог выбора файла не открывается
+    });
+  }
 
   els.improveBtn.addEventListener('click', showToast);
 
