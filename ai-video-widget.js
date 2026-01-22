@@ -62,49 +62,74 @@
     if (currentIndex !== String(state.currentSlide)) {
         // Если это не первая загрузка, запускаем анимацию
         if (currentIndex !== null && currentIndex !== undefined) {
+          // Предзагружаем следующее видео заранее
+          var nextIndex = (state.currentSlide + 1) % slides.length;
+          var nextSlide = slides[nextIndex];
           els.videoNext.src = slide.src;
           els.videoNext.load();
           
-          // Текущее видео уезжает влево
-          els.currentSlide.classList.add('slide-out');
-          // Новое видео подъезжает справа
-          els.nextSlide.classList.add('slide-in');
+          // Ждем, пока видео будет готово к воспроизведению
+          els.videoNext.addEventListener('loadeddata', function onLoaded() {
+            els.videoNext.removeEventListener('loadeddata', onLoaded);
+            
+            // Текущее видео уезжает влево
+            els.currentSlide.classList.add('slide-out');
+            // Новое видео подъезжает справа
+            els.nextSlide.classList.add('slide-in');
+            
+            // Запускаем новое видео сразу
+            els.videoNext.play().catch(function() {});
+            
+            // После завершения анимации меняем слайды местами
+            setTimeout(function() {
+              // Меняем роли слайдов
+              els.currentSlide.classList.remove('current', 'slide-out');
+              els.nextSlide.classList.remove('next', 'slide-in');
+              
+              var tempSlide = els.currentSlide;
+              var tempVideo = els.video;
+              
+              els.currentSlide = els.nextSlide;
+              els.video = els.videoNext;
+              
+              els.nextSlide = tempSlide;
+              els.videoNext = tempVideo;
+              
+              // Обновляем классы
+              els.currentSlide.classList.add('current');
+              els.nextSlide.classList.add('next');
+              
+              // Обновляем атрибуты
+              els.video.setAttribute('data-src', slide.src);
+              els.video.setAttribute('data-slide-index', String(state.currentSlide));
+              
+              // Останавливаем старое видео
+              if (tempVideo) {
+                tempVideo.pause();
+                tempVideo.currentTime = 0;
+              }
+            }, 600);
+          }, { once: true });
           
-          // После завершения анимации меняем слайды местами
-          setTimeout(function() {
-            // Меняем роли слайдов
-            els.currentSlide.classList.remove('current', 'slide-out');
-            els.nextSlide.classList.remove('next', 'slide-in');
-            
-            var tempSlide = els.currentSlide;
-            var tempVideo = els.video;
-            
-            els.currentSlide = els.nextSlide;
-            els.video = els.videoNext;
-            
-            els.nextSlide = tempSlide;
-            els.videoNext = tempVideo;
-            
-            // Обновляем классы
-            els.currentSlide.classList.add('current');
-            els.nextSlide.classList.add('next');
-            
-            // Обновляем атрибуты
-            els.video.setAttribute('data-src', slide.src);
-            els.video.setAttribute('data-slide-index', String(state.currentSlide));
-            
-            els.video.play().catch(function() {});
-            if (els.videoNext) {
-              els.videoNext.pause();
-              els.videoNext.currentTime = 0;
-            }
-          }, 600);
+          // Если видео уже загружено, запускаем сразу
+          if (els.videoNext.readyState >= 2) {
+            els.videoNext.dispatchEvent(new Event('loadeddata'));
+          }
         } else {
+          // Первая загрузка
           els.video.setAttribute('data-src', slide.src);
           els.video.setAttribute('data-slide-index', String(state.currentSlide));
           els.video.src = slide.src;
           els.video.load();
-          els.video.play().catch(function() {});
+          
+          els.video.addEventListener('loadeddata', function onLoaded() {
+            els.video.removeEventListener('loadeddata', onLoaded);
+            els.video.play().catch(function() {});
+          }, { once: true });
+          
+          if (els.video.readyState >= 2) {
+            els.video.dispatchEvent(new Event('loadeddata'));
+          }
         }
       }
   }
@@ -281,6 +306,15 @@
 
   function startAutoSlide() {
     if (autoSlideInterval) clearInterval(autoSlideInterval);
+    
+    // Предзагружаем все видео заранее
+    slides.forEach(function(slide) {
+      var video = document.createElement('video');
+      video.src = slide.src;
+      video.preload = 'auto';
+      video.load();
+    });
+    
     autoSlideInterval = setInterval(function() {
       state.currentSlide = (state.currentSlide + 1) % slides.length;
       updateVideo(); // Обновляем только видео
