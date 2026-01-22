@@ -50,17 +50,6 @@
   var autoSlideInterval = null;
   var lastRenderedSlide = -1;
 
-  // Предзагрузка следующего видео
-  function preloadNextVideo() {
-    if (!els.videoNext) return;
-    var nextIndex = (state.currentSlide + 1) % slides.length;
-    var nextSlide = slides[nextIndex];
-    if (els.videoNext.src !== nextSlide.src) {
-      els.videoNext.src = nextSlide.src;
-      els.videoNext.load();
-    }
-  }
-
   function updateVideo() {
     if (!els.video || !els.currentSlide || !els.nextSlide || !slides[state.currentSlide]) return;
     if (lastRenderedSlide === state.currentSlide) return; // Слайд не изменился, пропускаем
@@ -72,14 +61,25 @@
     if (currentIndex !== String(state.currentSlide)) {
         // Если это не первая загрузка, запускаем анимацию
         if (currentIndex !== null && currentIndex !== undefined) {
-          // Видео уже должно быть предзагружено, сразу запускаем анимацию
-          // Текущее видео уезжает влево
+          // Загружаем новое видео и запускаем с начала
+          els.videoNext.src = slide.src;
+          els.videoNext.currentTime = 0;
+          els.videoNext.load();
+          
+          // Запускаем анимацию сразу
           els.currentSlide.classList.add('slide-out');
-          // Новое видео подъезжает справа
           els.nextSlide.classList.add('slide-in');
           
-          // Запускаем новое видео сразу
-          els.videoNext.play().catch(function() {});
+          // Запускаем новое видео с начала после небольшой задержки для загрузки
+          els.videoNext.addEventListener('loadeddata', function onLoaded() {
+            els.videoNext.removeEventListener('loadeddata', onLoaded);
+            els.videoNext.play().catch(function() {});
+          }, { once: true });
+          
+          // Если видео уже загружено, запускаем сразу
+          if (els.videoNext.readyState >= 2) {
+            els.videoNext.play().catch(function() {});
+          }
           
           // После завершения анимации меняем слайды местами
           setTimeout(function() {
@@ -109,20 +109,15 @@
               els.videoNext.pause();
               els.videoNext.currentTime = 0;
             }
-            
-            // Предзагружаем следующее видео для следующего переключения
-            preloadNextVideo();
           }, 800);
         } else {
           // Первая загрузка
           els.video.setAttribute('data-src', slide.src);
           els.video.setAttribute('data-slide-index', String(state.currentSlide));
           els.video.src = slide.src;
+          els.video.currentTime = 0;
           els.video.load();
           els.video.play().catch(function() {});
-          
-          // Предзагружаем следующее видео
-          preloadNextVideo();
         }
       }
   }
