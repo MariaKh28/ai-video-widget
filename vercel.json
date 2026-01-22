@@ -1,13 +1,12 @@
 {
-  "public": true,
   "rewrites": [
     {
       "source": "/",
-      "destination": "/src/ai-video-widget.html"
+      "destination": "/ai-video-widget.html"
     },
     {
       "source": "/index.html",
-      "destination": "/src/ai-video-widget.html"
+      "destination": "/ai-video-widget.html"
     }
   ],
   "headers": [
