@@ -315,13 +315,27 @@
       video.load();
     });
     
-    autoSlideInterval = setInterval(function() {
+    // Функция для переключения слайда
+    function switchToNextSlide() {
       state.currentSlide = (state.currentSlide + 1) % slides.length;
-      updateVideo(); // Обновляем только видео
-    }, 5000);
+      updateVideo();
+      // Перезапускаем таймер для следующего переключения
+      autoSlideInterval = setTimeout(switchToNextSlide, 5000);
+    }
+    
+    // Запускаем первый переключатель через 5 секунд
+    autoSlideInterval = setTimeout(switchToNextSlide, 5000);
   }
 
   // Кнопки слайдера удалены - слайдер работает только автоматически
+  
+  // Очистка таймера при необходимости
+  function clearAutoSlide() {
+    if (autoSlideInterval) {
+      clearTimeout(autoSlideInterval);
+      autoSlideInterval = null;
+    }
+  }
 
   // Блокируем открытие диалога выбора файла при клике на Reference image
   var referenceBox = root.querySelector('.ai-video-widget-reference-box-upload');
